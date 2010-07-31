@@ -149,9 +149,8 @@ void DingooStub::processEvents()
 }
 void DingooStub::checkSound(uint32 time_delta)
 {
-	if(!audio.handle || !audio.callback)
+	if(!audio.Valid())
 		return;
-
 	if(time_delta)
 	{
 		int8 sound_buf[16384];
@@ -206,8 +205,16 @@ void DingooStub::checkKeys()
 		_pi.button = true;
 	if(ks.status&K_BUTTON_SELECT)
 		_pi.code = true;
+
+	static bool bs = false;
 	if(ks.status&K_BUTTON_START)
-		_pi.pause = true;
+	{
+		if(!bs)
+			_pi.pause = true;
+		bs = true;
+	}
+	else
+		bs = false;
 
 	if(ks.status&K_BUTTON_SELECT && ks.status&K_BUTTON_START)
 		_pi.quit = true;
